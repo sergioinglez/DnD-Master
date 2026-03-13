@@ -1,0 +1,2177 @@
+/*
+ * DnD Master Platform — platform.css v4.0
+ * Estética: GRIMOIRE OBSIDIANA
+ * Conceito: Interface como artefato mágico. Vidro obsidiano com incrustações
+ *           douradas. Luz de tocha quente. Parece um grimoire digital.
+ * Tipografia: Cinzel Decorative (títulos imperiais) + Crimson Text (corpo legível)
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap');
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════════════════════════════════════════ */
+:root {
+    /* Ouro — luz de tocha, não amarelo barato */
+    --g0:  #fce89a;   /* brilho máximo, highlight */
+    --g1:  #e8c56a;   /* ouro brilhante */
+    --g2:  #c9a84c;   /* ouro padrão */
+    --g3:  #9a7832;   /* ouro escuro */
+    --g4:  #6b4f10;   /* ouro profundo */
+    --g5:  #3d2c08;   /* quase preto dourado */
+    --g6:  #1e1604;   /* sombra dourada */
+
+    /* Obsidiana — preto azulado profundo */
+    --b0:  #0a0806;   /* preto quente base */
+    --b1:  #0f0c08;   /* card base */
+    --b2:  #14100a;   /* card hover */
+    --b3:  #1a1408;   /* card elevado */
+    --b4:  #221c0e;   /* borda quente */
+    --b5:  #2e2510;   /* borda visível */
+
+    /* Glassmorphism escuro */
+    --glass:        rgba(12, 9, 5, 0.92);
+    --glass-light:  rgba(22, 17, 10, 0.88);
+    --glass-border: rgba(201, 168, 76, 0.22);
+    --glass-glow:   rgba(201, 168, 76, 0.08);
+
+    /* Texto */
+    --t0:  #f5f5f5;   /* off-white — títulos */
+    --t1:  #e8dcc8;   /* marfim claro — texto padrão */
+    --t2:  #c4a87c;   /* pergaminho — muted */
+    --t3:  #8a6a48;   /* dim */
+    --t4:  #4a3828;   /* muito dim */
+
+    /* Semântica */
+    --verde:    #1e7a45;
+    --verde-b:  #27a35e;
+    --azul:     #2a5a8a;
+    --azul-b:   #3a78b8;
+    --vermelho: #7a1818;
+    --verm-b:   #c03030;
+    --roxo:     #5a2878;
+    --roxo-b:   #8a46b8;
+    --ambar:    #c87800;
+    --ambar-b:  #f09820;
+
+    /* Tipografia */
+    --f-titulo: 'Cinzel', serif;
+    --f-deco:   'Cinzel Decorative', serif;
+    --f-corpo:  'Crimson Text', Georgia, serif;
+
+    /* Espaçamentos */
+    --gap:    16px;
+    --gap-lg: 24px;
+    --r:      3px;
+    --r-lg:   6px;
+
+    /* Sombras */
+    --sh-card:  0 8px 32px rgba(0,0,0,.7), 0 1px 0 rgba(201,168,76,.08) inset;
+    --sh-ouro:  0 0 24px rgba(201,168,76,.35);
+    --sh-frame: 0 0 0 1px var(--glass-border), var(--sh-card);
+
+    /* Transições */
+    --ease: .22s ease;
+    --ease-bounce: .35s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RESET ABSOLUTO — SEQUESTRO DO WORDPRESS
+   O #dnd-root vira um app fullscreen que ignora o tema WP completamente.
+══════════════════════════════════════════════════════════════════════════════ */
+html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;               /* body nunca scrolla — só os painéis internos */
+    background: var(--b0);
+}
+
+/* Oculta absolutamente tudo do WordPress */
+#wpadminbar,
+.site-header, .site-footer,
+.main-navigation, .widget-area,
+.entry-header, .entry-footer,
+#page, #masthead, #colophon,
+#primary, #secondary,
+.wp-site-blocks,
+header[class], footer[class],
+nav[class] {
+    display: none !important;
+}
+
+/* O root React vira o app em si */
+#dnd-root {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;  /* mantém hidden — scroll é gerenciado pelos filhos */
+    background:
+        radial-gradient(ellipse 140% 100% at 50% -5%,  #1c0f0518 0%, transparent 55%),
+        radial-gradient(ellipse  80%  60% at 10% 110%, #0a0c1022 0%, transparent 50%),
+        radial-gradient(ellipse  50%  80% at 95%  50%, #1a0a0215 0%, transparent 45%),
+        var(--b0);
+    font-family: var(--f-corpo);
+    color: var(--t1);
+    font-size: 15px;
+    line-height: 1.65;
+
+    /* Textura de grão muito sutil — como pele de grimoire */
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23g)' opacity='.028'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse 140% 100% at 50% -5%,  #1c0f0518 0%, transparent 55%),
+        radial-gradient(ellipse  80%  60% at 10% 110%, #0a0c1022 0%, transparent 50%),
+        var(--b0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   SCROLLBAR — ESTILIZADA
+══════════════════════════════════════════════════════════════════════════════ */
+* { scrollbar-width: thin; scrollbar-color: var(--g5) var(--b0); }
+::-webkit-scrollbar              { width: 4px; height: 4px; }
+::-webkit-scrollbar-track        { background: transparent; }
+::-webkit-scrollbar-thumb        { background: var(--g5); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover  { background: var(--g4); }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   LOADING
+══════════════════════════════════════════════════════════════════════════════ */
+.dnd-loading {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; flex-direction: column; gap: 18px;
+    color: var(--g2); font-family: var(--f-titulo);
+    letter-spacing: 7px; font-size: 10px; text-transform: uppercase;
+}
+.spinner {
+    width: 40px; height: 40px;
+    border: 1px solid var(--b5);
+    border-top-color: var(--g2);
+    border-radius: 50%;
+    animation: spin .9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes nevoa-drift {
+    0%   { transform: scaleX(1)    translateY(0); }
+    50%  { transform: scaleX(1.04) translateY(-6px); }
+    100% { transform: scaleX(0.97) translateY(3px); }
+}
+@keyframes runa-pulsar {
+    0%,100% { opacity: var(--op,0.08); transform: translateY(0) scale(1); }
+    40%     { opacity: calc(var(--op,0.08)*2.5); transform: translateY(-8px) scale(1.1); }
+    70%     { opacity: var(--op,0.08); transform: translateY(3px) scale(0.95); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PARTÍCULAS
+══════════════════════════════════════════════════════════════════════════════ */
+.dnd-particles {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0; overflow: hidden;
+}
+.particle {
+    position: absolute; opacity: 0;
+    animation: float-p linear infinite;
+}
+.particle:nth-child(3n)   { width: 2px; height: 2px; background: var(--g2);  border-radius: 50%; }
+.particle:nth-child(3n+1) { width: 1px; height: 1px; background: var(--g1);  border-radius: 50%; }
+.particle:nth-child(3n+2) { width: 3px; height: 1px; background: var(--g3);  border-radius: 0; transform: rotate(30deg); }
+@keyframes float-p {
+    0%   { opacity: 0; transform: translateY(100vh) scale(0); }
+    6%   { opacity: .8; }
+    94%  { opacity: .1; }
+    100% { opacity: 0; transform: translateY(-12vh) scale(1.5); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ANIMAÇÕES BASE
+══════════════════════════════════════════════════════════════════════════════ */
+@keyframes fade-in  { from { opacity:0 }              to { opacity:1 } }
+@keyframes fade-up  { from { opacity:0; transform:translateY(22px) } to { opacity:1; transform:translateY(0) } }
+@keyframes fade-dn  { from { opacity:0; transform:translateY(-14px) } to { opacity:1; transform:translateY(0) } }
+@keyframes scale-in { from { opacity:0; transform:scale(.92) }         to { opacity:1; transform:scale(1)  } }
+@keyframes slide-r  { from { opacity:0; transform:translateX(20px) }   to { opacity:1; transform:translateX(0) } }
+
+@keyframes ouro-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+    50%      { box-shadow: 0 0 0 4px rgba(201,168,76,.15); }
+}
+@keyframes hp-critico {
+    0%,100% { box-shadow: none; }
+    50%      { box-shadow: 0 0 12px rgba(192,48,48,.5), 0 0 0 1px rgba(192,48,48,.4); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ LANDING PAGE
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* Container da landing — tem scroll próprio */
+.landing-root {
+    position: absolute; inset: 0;
+    overflow-y: auto; overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* ── HERO ─────────────────────────────────────────────────────────────────── */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 24px 80px;
+    overflow: hidden;
+}
+
+/* Fundo com camadas */
+.hero::before {
+    content: '';
+    position: absolute; inset: 0; z-index: 0;
+    background:
+        radial-gradient(ellipse 110% 80% at 50% -10%, #c9a84c0e 0%, transparent 55%),
+        radial-gradient(ellipse  70%  90% at  5% 110%, #0a0c1a18 0%, transparent 50%),
+        radial-gradient(ellipse  40%  70% at 98%  85%, #180a0210 0%, transparent 45%);
+}
+
+/* Grade de pedras */
+.hero::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+        repeating-linear-gradient(0deg,  transparent, transparent 82px, #c9a84c05 82px, #c9a84c05 83px),
+        repeating-linear-gradient(90deg, transparent, transparent 82px, #c9a84c05 82px, #c9a84c05 83px);
+    pointer-events: none;
+}
+
+.hero > * { position: relative; z-index: 2; }
+
+/* Vinheta radial sobre a grade */
+.hero-vinheta {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse 120% 120% at 50% 50%, transparent 35%, var(--b0) 100%);
+}
+
+.hero-ornamento {
+    font-family: var(--f-titulo);
+    font-size: 10px; letter-spacing: 10px;
+    color: var(--g5); text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fade-in 1.4s ease both;
+}
+.hero-ornamento::before { content: '✦ '; }
+.hero-ornamento::after  { content: ' ✦'; }
+
+.hero-titulo {
+    font-family: var(--f-deco);
+    font-size: clamp(44px, 10vw, 108px);
+    font-weight: 900; line-height: .95;
+    color: var(--g2);
+    text-shadow: 0 0 100px #c9a84c28, 0 0 40px #c9a84c18, 0 6px 30px #00000099;
+    animation: fade-up 1s ease .12s both;
+    letter-spacing: -2px;
+}
+
+.hero-sub {
+    font-family: var(--f-titulo);
+    font-size: clamp(11px, 1.8vw, 14px);
+    letter-spacing: 7px; text-transform: uppercase;
+    color: var(--g5);
+    animation: fade-up 1s ease .28s both;
+    margin-top: 10px; margin-bottom: 36px;
+}
+
+/* Divisor com espada */
+.hero-divisor {
+    position: relative;
+    width: 320px; height: 1px; margin: 0 auto 36px;
+    background: linear-gradient(90deg, transparent, var(--g4) 20%, var(--g2) 50%, var(--g4) 80%, transparent);
+    animation: fade-in 1s ease .4s both;
+}
+.hero-divisor::before {
+    content: '⚔';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--b0); padding: 0 14px;
+    color: var(--g3); font-size: 14px;
+    text-shadow: 0 0 8px #c9a84c44;
+}
+
+.hero-desc {
+    max-width: 560px;
+    font-size: clamp(17px, 2.2vw, 21px);
+    color: var(--t2); font-style: italic; line-height: 1.8;
+    animation: fade-up 1s ease .5s both;
+    margin-bottom: 52px;
+}
+
+/* CTA — forma de escudo horizontal */
+.btn-cta {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 19px 56px;
+    background: linear-gradient(135deg, var(--g5) 0%, var(--g4) 40%, var(--g3) 70%, var(--g4) 100%);
+    background-size: 200% 200%;
+    border: 1px solid var(--g3);
+    clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%);
+    color: var(--t0);
+    font-family: var(--f-titulo);
+    font-size: 13px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase;
+    cursor: pointer;
+    animation: fade-up 1s ease .65s both;
+    transition: background-position .5s ease, box-shadow var(--ease), transform .15s;
+    box-shadow: 0 6px 30px rgba(201,168,76,.15), 0 2px 8px rgba(0,0,0,.5);
+}
+.btn-cta:hover {
+    background-position: 100% 100%;
+    box-shadow: 0 8px 40px rgba(201,168,76,.35), 0 4px 16px rgba(0,0,0,.6);
+    transform: translateY(-3px);
+}
+.btn-cta:active { transform: translateY(0); }
+
+.hero-hint {
+    margin-top: 18px;
+    font-size: 12px; letter-spacing: 2px; color: var(--t4);
+    animation: fade-in 1s ease 1.1s both;
+}
+
+/* ── SEÇÃO GENÉRICA ───────────────────────────────────────────────────────── */
+.secao {
+    padding: 90px 24px;
+    position: relative;
+}
+
+.secao-label {
+    font-family: var(--f-titulo);
+    font-size: 10px; letter-spacing: 8px; text-transform: uppercase;
+    color: var(--g5); text-align: center; margin-bottom: 10px;
+}
+
+.secao-titulo {
+    font-family: var(--f-deco);
+    font-size: clamp(24px, 4vw, 42px);
+    color: var(--t0); text-align: center; margin-bottom: 52px;
+    text-shadow: 0 2px 20px rgba(0,0,0,.6);
+}
+
+/* ── FEATURES GRID ────────────────────────────────────────────────────────── */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1px;
+    max-width: 1060px; margin: 0 auto;
+    border: 1px solid var(--b5);
+    box-shadow: var(--sh-card);
+}
+
+.feature-item {
+    background: var(--b1);
+    padding: 36px 28px;
+    position: relative; overflow: hidden;
+    transition: background var(--ease);
+}
+.feature-item::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--g5), transparent);
+    opacity: 0; transition: opacity var(--ease);
+}
+.feature-item:hover { background: var(--b2); }
+.feature-item:hover::before { opacity: 1; }
+
+.feature-emoji  { font-size: 30px; display: block; margin-bottom: 14px; }
+.feature-titulo {
+    font-family: var(--f-titulo);
+    font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--g2); margin-bottom: 10px;
+}
+.feature-desc { font-size: 15px; color: var(--t3); line-height: 1.65; }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ ADVENTURE CARDS — seção "Aventuras em Destaque"
+   Efeito: zoom de imagem de fundo no hover + botão "Explorar" revelado
+══════════════════════════════════════════════════════════════════════════════ */
+.aventuras-secao {
+    padding: 90px 24px;
+    background: linear-gradient(180deg, var(--b0) 0%, #0d0a06 100%);
+}
+
+.aventuras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1060px; margin: 0 auto;
+}
+
+.aventura-card {
+    position: relative;
+    height: 400px;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    cursor: pointer;
+    /* Borda ornamentada — 3 camadas */
+    box-shadow:
+        0 0 0 1px var(--glass-border),
+        0 0 0 3px rgba(0,0,0,.8),
+        0 0 0 4px rgba(201,168,76,.08),
+        0 16px 48px rgba(0,0,0,.7);
+    transition: box-shadow var(--ease);
+}
+.aventura-card:hover {
+    box-shadow:
+        0 0 0 1px rgba(201,168,76,.45),
+        0 0 0 3px rgba(0,0,0,.8),
+        0 0 0 4px rgba(201,168,76,.12),
+        0 24px 60px rgba(0,0,0,.8),
+        var(--sh-ouro);
+}
+
+/* Imagem de fundo com zoom */
+.aventura-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+    will-change: transform;
+}
+.aventura-card:hover .aventura-bg { transform: scale(1.08); }
+
+/* Gradiente sobre a imagem */
+.aventura-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(4,3,2,.98) 0%,
+        rgba(4,3,2,.75) 35%,
+        rgba(4,3,2,.25) 65%,
+        rgba(4,3,2,.08) 100%
+    );
+    transition: background .4s ease;
+}
+.aventura-card:hover .aventura-overlay {
+    background: linear-gradient(
+        to top,
+        rgba(4,3,2,.97) 0%,
+        rgba(4,3,2,.82) 40%,
+        rgba(4,3,2,.45) 70%,
+        rgba(4,3,2,.15) 100%
+    );
+}
+
+/* Moldura dourada CSS pura nos cantos */
+.aventura-moldura {
+    position: absolute; inset: 10px; z-index: 2; pointer-events: none;
+    border: 1px solid rgba(201,168,76,.18);
+    border-radius: var(--r);
+    transition: border-color var(--ease);
+}
+.aventura-card:hover .aventura-moldura { border-color: rgba(201,168,76,.45); }
+
+/* Ornamentos nos cantos da moldura */
+.aventura-moldura::before,
+.aventura-moldura::after {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    border-color: var(--g3);
+    border-style: solid;
+    transition: border-color var(--ease);
+}
+.aventura-moldura::before {
+    top: -1px; left: -1px;
+    border-width: 2px 0 0 2px;
+}
+.aventura-moldura::after {
+    bottom: -1px; right: -1px;
+    border-width: 0 2px 2px 0;
+}
+.aventura-card:hover .aventura-moldura::before,
+.aventura-card:hover .aventura-moldura::after { border-color: var(--g2); }
+
+/* Conteúdo do card */
+.aventura-conteudo {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 28px 24px;
+    z-index: 3;
+}
+
+.aventura-sistema {
+    font-family: var(--f-titulo);
+    font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--g4); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+}
+.aventura-sistema::before {
+    content: '';
+    display: inline-block; width: 20px; height: 1px;
+    background: var(--g4);
+}
+
+.aventura-nome {
+    font-family: var(--f-deco);
+    font-size: clamp(20px, 3vw, 26px);
+    color: var(--t0); line-height: 1.1;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 16px rgba(0,0,0,.8);
+}
+
+.aventura-tagline {
+    font-size: 14px; color: var(--t2);
+    font-style: italic; line-height: 1.5;
+    margin-bottom: 20px;
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s ease, opacity .35s ease;
+    opacity: 0;
+}
+.aventura-card:hover .aventura-tagline {
+    max-height: 80px; opacity: 1;
+}
+
+/* Botão "Explorar" — aparece no hover */
+.aventura-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 22px;
+    background: rgba(201,168,76,.12);
+    border: 1px solid var(--g3);
+    border-radius: var(--r);
+    color: var(--g1);
+    font-family: var(--f-titulo);
+    font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .35s ease .05s, transform .35s var(--ease-bounce) .05s,
+                background var(--ease), border-color var(--ease);
+}
+.aventura-card:hover .aventura-btn {
+    opacity: 1; transform: translateY(0);
+}
+.aventura-btn:hover {
+    background: rgba(201,168,76,.22);
+    border-color: var(--g2);
+}
+
+/* Badge "Em breve" */
+.aventura-badge-breve {
+    position: absolute; top: 20px; right: 20px; z-index: 4;
+    padding: 5px 12px;
+    background: rgba(10,8,6,.9);
+    border: 1px solid var(--b5);
+    border-radius: 20px;
+    font-family: var(--f-titulo);
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--t3);
+}
+
+/* Card bloqueado */
+.aventura-card.bloqueado {
+    cursor: default;
+    filter: brightness(.7) saturate(.5);
+}
+.aventura-card.bloqueado:hover .aventura-bg { transform: scale(1); }
+.aventura-card.bloqueado:hover .aventura-btn { opacity: 0; }
+
+/* ── FAQ ──────────────────────────────────────────────────────────────────── */
+.faq-wrap { max-width: 760px; margin: 0 auto; }
+
+.faq-item {
+    border-bottom: 1px solid var(--b4);
+    overflow: hidden;
+}
+.faq-q {
+    width: 100%; text-align: left;
+    padding: 20px 0;
+    background: none; border: none; cursor: pointer;
+    color: var(--t1); font-family: var(--f-titulo);
+    font-size: 14px; letter-spacing: 1px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    transition: color var(--ease);
+}
+.faq-q:hover { color: var(--g1); }
+.faq-icon { color: var(--g5); font-size: 18px; flex-shrink: 0; transition: transform var(--ease); }
+.faq-item.aberto .faq-icon { transform: rotate(45deg); color: var(--g2); }
+.faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s ease;
+    font-size: 15px; color: var(--t2); line-height: 1.75;
+}
+.faq-item.aberto .faq-a { max-height: 300px; padding-bottom: 20px; }
+
+/* ── CTA FINAL ────────────────────────────────────────────────────────────── */
+.cta-secao {
+    text-align: center; padding: 100px 24px;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, #c9a84c08 0%, transparent 70%);
+}
+.cta-titulo {
+    font-family: var(--f-deco);
+    font-size: clamp(26px, 5vw, 50px);
+    color: var(--g2); margin-bottom: 14px;
+    text-shadow: var(--sh-ouro);
+}
+.cta-sub { font-size: 18px; color: var(--t2); font-style: italic; margin-bottom: 40px; }
+
+.dnd-footer {
+    text-align: center; padding: 22px;
+    border-top: 1px solid var(--b4);
+    font-family: var(--f-titulo);
+    font-size: 11px; letter-spacing: 4px; color: var(--t4);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ MODAL DE LOGIN — GRIMOIRE DE ACESSO
+══════════════════════════════════════════════════════════════════════════════ */
+.login-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(4, 3, 2, 0.88);
+    backdrop-filter: blur(6px);
+    animation: fade-in .25s ease;
+}
+
+.login-modal {
+    position: relative;
+    width: 100%; max-width: 440px;
+    animation: scale-in .38s var(--ease-bounce) both;
+}
+
+/* Container com efeito de grimoire antigo */
+.login-body {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E"),
+        linear-gradient(168deg, #1a1306 0%, #0e0a04 40%, #080604 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r);
+    padding-bottom: 32px;
+    box-shadow:
+        0 0 0 3px rgba(0,0,0,.9),
+        0 0 0 4px rgba(201,168,76,.06),
+        0 30px 80px rgba(0,0,0,.9),
+        inset 0 1px 0 rgba(201,168,76,.12),
+        inset 0 -1px 0 rgba(201,168,76,.06);
+    position: relative; overflow: hidden;
+}
+
+/* Barra superior dourada */
+.login-body::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%, var(--g5) 10%, var(--g3) 30%,
+        var(--g1) 50%, var(--g3) 70%, var(--g5) 90%, transparent 100%
+    );
+}
+
+/* Símbolo decorativo de fundo (marca d'água) */
+.login-body::after {
+    content: '⚔';
+    position: absolute; bottom: -15px; right: 18px;
+    font-size: 90px; color: rgba(201,168,76,.025);
+    pointer-events: none; line-height: 1;
+    transform: rotate(-12deg);
+}
+
+.login-header {
+    text-align: center; padding: 38px 32px 24px;
+    border-bottom: 1px solid var(--b4);
+    position: relative;
+}
+.login-emblema {
+    font-size: 38px; display: block; margin-bottom: 14px;
+    filter: drop-shadow(0 0 14px rgba(201,168,76,.65));
+    animation: ouro-pulse 3s ease-in-out infinite;
+}
+.login-titulo {
+    font-family: var(--f-deco); font-size: 21px;
+    color: var(--g2); letter-spacing: 2px;
+    text-shadow: 0 0 24px rgba(201,168,76,.35);
+}
+.login-subtitulo {
+    font-family: var(--f-titulo); font-size: 11px;
+    letter-spacing: 5px; text-transform: uppercase;
+    color: var(--t4); margin-top: 5px;
+}
+
+.login-form { padding: 26px 32px 0; }
+
+.login-label {
+    display: block;
+    font-family: var(--f-titulo); font-size: 10px;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--g5); margin-bottom: 7px;
+}
+
+.login-input {
+    width: 100%;
+    background: rgba(8,6,3,.9);
+    border: 1px solid var(--b5);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    color: var(--t0); font-family: var(--f-corpo); font-size: 15px;
+    outline: none;
+    transition: border-color var(--ease), box-shadow var(--ease);
+    -webkit-appearance: none; appearance: none;
+}
+.login-input:focus {
+    border-color: var(--g3);
+    box-shadow: 0 0 0 2px rgba(201,168,76,.12), 0 0 14px rgba(201,168,76,.08);
+    color: var(--t0);
+}
+.login-input::placeholder { color: var(--t4); }
+.login-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px #0e0a04 inset;
+    -webkit-text-fill-color: var(--t0);
+}
+
+.login-campo { margin-bottom: 16px; }
+
+.login-erro {
+    background: rgba(122,24,24,.18);
+    border: 1px solid rgba(192,48,48,.4);
+    border-radius: var(--r);
+    padding: 10px 14px;
+    color: #e07070; font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+    animation: fade-dn .3s ease;
+}
+
+.login-btn {
+    width: 100%; padding: 14px;
+    margin-top: 6px;
+    background: linear-gradient(135deg, var(--g5) 0%, var(--g4) 50%, var(--g5) 100%);
+    background-size: 200% 100%;
+    border: 1px solid var(--g4);
+    border-radius: var(--r);
+    color: var(--g1); font-family: var(--f-titulo);
+    font-size: 12px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: background-position .5s, box-shadow var(--ease), transform .15s;
+}
+.login-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,.1) 50%, transparent 100%);
+    transform: translateX(-100%); transition: transform .6s ease;
+}
+.login-btn:hover:not(:disabled) {
+    background-position: 100% 0;
+    box-shadow: 0 4px 24px rgba(201,168,76,.25);
+    transform: translateY(-1px);
+}
+.login-btn:hover:not(:disabled)::after { transform: translateX(100%); }
+.login-btn:active:not(:disabled) { transform: translateY(1px); }
+.login-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.login-footer {
+    margin-top: 20px; text-align: center;
+    font-size: 12px; color: var(--t4); letter-spacing: 1px;
+}
+.login-footer a { color: var(--g5); text-decoration: none; transition: color var(--ease); }
+.login-footer a:hover { color: var(--g2); }
+
+.login-fechar {
+    position: absolute; top: 12px; right: 12px;
+    width: 28px; height: 28px;
+    background: none; border: 1px solid var(--b4);
+    border-radius: 50%; color: var(--t4); font-size: 15px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: color var(--ease), border-color var(--ease);
+}
+.login-fechar:hover { color: var(--g2); border-color: var(--g5); }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ PLATAFORMA — APP SHELL
+   Layout: Header fixo + conteúdo com scroll próprio
+══════════════════════════════════════════════════════════════════════════════ */
+.dnd-app {
+    display: flex; flex-direction: column;
+    height: 100%;           /* preenche o #dnd-root fixo */
+    overflow: hidden;
+}
+
+/* Barra de nav */
+.dnd-header {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    height: 52px;
+    background: rgba(8,6,3,.96);
+    border-bottom: 1px solid var(--b4);
+    backdrop-filter: blur(8px);
+    z-index: 50;
+}
+
+.dnd-header-brand {
+    font-family: var(--f-deco);
+    font-size: 15px; letter-spacing: 2px;
+    color: var(--g2); text-shadow: 0 0 12px rgba(201,168,76,.25);
+    flex-shrink: 0;
+}
+
+.dnd-header-user {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--f-titulo); font-size: 11px;
+    letter-spacing: 2px; color: var(--t2);
+}
+
+.btn-sair {
+    padding: 5px 13px;
+    background: none; border: 1px solid var(--b5);
+    border-radius: var(--r);
+    color: var(--t3); font-family: var(--f-titulo);
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; transition: color var(--ease), border-color var(--ease);
+}
+.btn-sair:hover { color: var(--verm-b); border-color: var(--vermelho); }
+
+/* Nav tabs */
+.dnd-nav {
+    flex-shrink: 0;
+    display: flex; gap: 1px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--b4);
+    background: rgba(6,5,3,.9);
+    overflow-x: auto; scrollbar-width: none;
+}
+.dnd-nav::-webkit-scrollbar { display: none; }
+
+.dnd-nav-btn {
+    padding: 10px 18px;
+    background: none; border: none;
+    color: var(--t3); font-family: var(--f-titulo);
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color var(--ease), border-color var(--ease);
+}
+.dnd-nav-btn:hover  { color: var(--t1); }
+.dnd-nav-btn.ativo  { color: var(--g2); border-bottom-color: var(--g2); }
+
+/* Área de conteúdo */
+.dnd-content {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    padding: 24px 20px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ HUD DE 3 COLUNAS — O GRIMOIRE ABERTO
+   Layout: Log (30%) | Cena (40%) | Ficha (30%)
+   Cada coluna é um painel independente com scroll interno.
+══════════════════════════════════════════════════════════════════════════════ */
+.hud-grid {
+    display: grid;
+    grid-template-columns: 30% 1fr 30%;
+    gap: 12px;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ── GRID DO MESTRE (sidebar capítulos + cena + log) ───────────────────────── */
+.hud-grid-mestre {
+    grid-template-columns: 240px 1fr 280px;
+}
+
+/* ── SIDEBAR DE CAPÍTULOS ───────────────────────────────────────────────────── */
+.hud-sidebar-caps {
+    display: flex; flex-direction: column;
+    background: rgba(10,7,3,.92);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--sh-card);
+}
+.hud-sidebar-scroll {
+    flex: 1; overflow-y: auto; padding: 8px;
+}
+.hud-empty-msg {
+    text-align: center; padding: 40px 16px;
+    color: var(--t3); font-size: 13px; line-height: 1.8;
+}
+.cap-btn {
+    display: flex; align-items: flex-start; gap: 10px;
+    width: 100%; text-align: left;
+    background: none; border: none; cursor: pointer;
+    padding: 10px 10px; border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+    color: var(--t2); font-family: var(--f-corpo); font-size: 14px;
+    line-height: 1.4; margin-bottom: 2px;
+}
+.cap-btn:hover { background: rgba(201,168,76,.08); color: var(--t1); }
+.cap-btn.ativo {
+    background: rgba(201,168,76,.14);
+    color: var(--g1);
+    border-left: 2px solid var(--g2);
+}
+.cap-num {
+    flex-shrink: 0;
+    font-family: var(--f-titulo); font-size: 9px;
+    letter-spacing: 2px; color: var(--g4);
+    margin-top: 3px;
+}
+.cap-btn.ativo .cap-num { color: var(--g2); }
+.cap-nome { flex: 1; }
+
+/* ── COLUNA ESQUERDA — LOG DE NARRAÇÃO ───────────────────────────────────── */
+.hud-log {
+    display: flex; flex-direction: column;
+    background: rgba(10,7,3,.92);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--sh-card);
+}
+
+.hud-col-titulo {
+    flex-shrink: 0;
+    padding: 12px 16px;
+    background: rgba(6,4,2,.95);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-family: var(--f-titulo);
+    font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--g2);
+    display: flex; align-items: center; gap: 8px;
+}
+.hud-col-titulo::before {
+    content: '';
+    width: 3px; height: 12px;
+    background: var(--g4);
+    border-radius: 2px;
+}
+
+/* Scroll tipo pergaminho */
+.hud-log-scroll {
+    flex: 1; overflow-y: auto; padding: 16px;
+    /* Imita papel envelhecido com gradiente lateral */
+    background:
+        linear-gradient(90deg, rgba(20,14,6,.6) 0%, transparent 8%, transparent 92%, rgba(20,14,6,.6) 100%);
+}
+
+/* Entrada do log */
+.log-entry {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(42,31,8,.5);
+    animation: fade-dn .4s ease;
+}
+.log-entry:last-child { border-bottom: none; }
+
+.log-timestamp {
+    font-family: var(--f-titulo); font-size: 9px;
+    letter-spacing: 2px; color: var(--g5);
+    text-transform: uppercase; margin-bottom: 4px;
+}
+
+.log-texto {
+    font-size: 14px; color: var(--t1); line-height: 1.65;
+    font-style: italic;
+}
+
+.log-acao { color: var(--t1); font-style: normal; }
+.log-dano     { color: var(--verm-b); }
+.log-cura     { color: var(--verde-b); }
+.log-item     { color: var(--ambar-b); }
+.log-nivel    { color: var(--g1); font-weight: 600; }
+.log-sistema  { color: var(--g2); font-style: normal; opacity: 0.85; }
+.log-narracao { color: var(--t0); font-style: italic; }
+
+/* Input de narração (Mestre) */
+.log-input-area {
+    flex-shrink: 0;
+    padding: 10px;
+    border-top: 1px solid var(--b4);
+    background: rgba(6,4,2,.9);
+    display: flex; gap: 8px;
+}
+.log-textarea {
+    flex: 1;
+    background: rgba(12,9,4,.9);
+    border: 1px solid var(--b4);
+    border-radius: var(--r);
+    padding: 8px 10px;
+    color: var(--t1); font-family: var(--f-corpo); font-size: 13px;
+    resize: none; height: 54px; outline: none;
+    transition: border-color var(--ease);
+}
+.log-textarea:focus { border-color: var(--g5); }
+
+/* ── COLUNA CENTRAL — CENA IA ─────────────────────────────────────────────── */
+.hud-cena {
+    display: flex; flex-direction: column;
+    background: rgba(8,5,2,.92);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--sh-card);
+}
+
+.hud-cena-imagem-wrap {
+    flex: 1; position: relative; overflow: hidden;
+    min-height: 0;
+}
+
+/* Imagem da cena */
+.hud-cena-img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: opacity .6s ease;
+}
+
+.hud-cena-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, #1a0f0215 0%, transparent 70%);
+    color: var(--t4);
+}
+.hud-cena-placeholder-icon { font-size: 56px; opacity: .3; }
+.hud-cena-placeholder-txt  {
+    font-family: var(--f-titulo); font-size: 10px;
+    letter-spacing: 5px; text-transform: uppercase; color: var(--g5);
+}
+
+/* Moldura ornamentada sobre a imagem — 4 cantos em CSS puro */
+.hud-cena-moldura {
+    position: absolute; inset: 12px; pointer-events: none;
+    border: 1px solid rgba(201,168,76,.12);
+    border-radius: var(--r);
+}
+/* Canto superior esquerdo */
+.hud-cena-moldura::before {
+    content: '';
+    position: absolute; top: -2px; left: -2px;
+    width: 22px; height: 22px;
+    border-top: 2px solid var(--g4);
+    border-left: 2px solid var(--g4);
+}
+/* Canto inferior direito */
+.hud-cena-moldura::after {
+    content: '';
+    position: absolute; bottom: -2px; right: -2px;
+    width: 22px; height: 22px;
+    border-bottom: 2px solid var(--g4);
+    border-right: 2px solid var(--g4);
+}
+
+/* Gradiente inferior na cena */
+.hud-cena-grad {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background: linear-gradient(to top, rgba(6,4,2,1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* Info da cena atual */
+.hud-cena-info {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    background: rgba(6,4,2,.97);
+    max-height: 160px; overflow-y: auto;
+}
+.hud-cena-titulo {
+    font-family: var(--f-titulo); font-size: 11px;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--g1);
+    margin-bottom: 6px;
+}
+.hud-cena-descricao { font-size: 14px; color: var(--t1); line-height: 1.7; }
+
+/* ── COLUNA DIREITA — FICHA RÁPIDA ─────────────────────────────────────────── */
+.hud-ficha {
+    display: flex; flex-direction: column; gap: 0;
+    background: rgba(10,7,3,.92);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--sh-card);
+}
+
+.hud-ficha-scroll {
+    flex: 1; overflow-y: auto; padding: 0;
+}
+
+/* Retrato pequeno no topo da ficha */
+.hud-retrato-wrap {
+    position: relative; overflow: hidden; height: 160px;
+}
+.hud-retrato {
+    width: 100%; height: 100%; object-fit: cover;
+}
+.hud-retrato-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--b3), var(--b1));
+    font-size: 44px; color: var(--t4);
+}
+.hud-retrato-grad {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+    background: linear-gradient(to top, var(--b1), transparent);
+    pointer-events: none;
+}
+
+.hud-ficha-dados { padding: 12px 14px; }
+
+.hud-ficha-nome {
+    font-family: var(--f-deco); font-size: 16px;
+    color: var(--t0); margin-bottom: 2px;
+    text-shadow: 0 1px 8px rgba(0,0,0,.6);
+}
+.hud-ficha-sub {
+    font-family: var(--f-titulo); font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--g5);
+    margin-bottom: 12px;
+}
+
+/* HP Bar */
+.hp-block {
+    padding: 10px 14px;
+    border-top: 1px solid var(--b4);
+}
+.hp-label {
+    display: flex; justify-content: space-between;
+    font-family: var(--f-titulo); font-size: 10px;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--t3);
+    margin-bottom: 6px;
+}
+.hp-valor { color: var(--t1); }
+
+.hp-bar {
+    height: 8px; background: rgba(0,0,0,.5);
+    border-radius: 4px; overflow: hidden;
+    border: 1px solid var(--b4);
+}
+.hp-fill {
+    height: 100%; border-radius: 4px;
+    transition: width .6s ease, background-color .6s ease;
+}
+
+/* HP saudável */
+.hp-fill[data-estado="vivo"]   { background: linear-gradient(90deg, var(--verde), var(--verde-b)); }
+/* HP médio */
+.hp-fill[data-estado="ferido"] { background: linear-gradient(90deg, var(--ambar), var(--ambar-b)); }
+/* HP crítico — pulsa */
+.hp-fill[data-estado="critico"] {
+    background: linear-gradient(90deg, var(--vermelho), var(--verm-b));
+    animation: hp-critico 1.2s ease-in-out infinite;
+}
+/* HP crítico — o bloco todo pulsa suavemente */
+.hp-block.critico { animation: hp-critico 1.2s ease-in-out infinite; }
+
+/* Mini atributos */
+.hud-atributos {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; border-top: 1px solid var(--b4);
+    border-bottom: 1px solid var(--b4);
+}
+.hud-atr-item {
+    background: var(--b1); padding: 8px 6px; text-align: center;
+    transition: background var(--ease);
+}
+.hud-atr-item:hover { background: var(--b2); }
+.hud-atr-sigla {
+    font-family: var(--f-titulo); font-size: 8px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--t4);
+    display: block;
+}
+.hud-atr-val {
+    font-family: var(--f-deco); font-size: 18px; color: var(--g2); display: block;
+}
+.hud-atr-mod {
+    font-family: var(--f-titulo); font-size: 10px; color: var(--t3); display: block;
+}
+
+/* Condições */
+.hud-condicoes {
+    padding: 10px 14px;
+    border-top: 1px solid var(--b4);
+    display: flex; flex-wrap: wrap; gap: 5px;
+}
+.cond-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 20px;
+    font-family: var(--f-titulo); font-size: 9px;
+    letter-spacing: 2px; text-transform: uppercase;
+    border: 1px solid;
+}
+.cond-envenenado   { background: rgba(27,90,27,.2); color: #5ad070; border-color: #1e7a4544; }
+.cond-confuso      { background: rgba(90,40,120,.2); color: #b070e0; border-color: var(--roxo); }
+.cond-paralisado   { background: rgba(42,80,130,.2); color: #70a0d0; border-color: var(--azul); }
+.cond-amedrontado  { background: rgba(120,24,24,.2); color: #e07070; border-color: var(--vermelho); }
+.cond-inconsciente { background: rgba(50,50,50,.2);  color: #888;    border-color: #444; }
+
+/* Mini inventário na ficha */
+.hud-inv {
+    padding: 10px 14px;
+    border-top: 1px solid var(--b4);
+}
+.hud-inv-titulo {
+    font-family: var(--f-titulo); font-size: 9px;
+    letter-spacing: 4px; text-transform: uppercase; color: var(--g5);
+    margin-bottom: 8px;
+}
+.hud-inv-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+}
+.hud-inv-slot {
+    aspect-ratio: 1; background: rgba(0,0,0,.4);
+    border: 1px solid var(--b4); border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer;
+    transition: border-color var(--ease), background var(--ease);
+}
+.hud-inv-slot:hover { border-color: var(--g5); background: var(--b2); }
+.hud-inv-slot img {
+    width: 100%; height: 100%; object-fit: cover;
+    border-radius: var(--r);
+}
+.hud-inv-slot.vazio { color: var(--b4); font-size: 14px; }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ CARDS GERAIS (dentro da plataforma)
+══════════════════════════════════════════════════════════════════════════════ */
+.dnd-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-lg);
+    padding: 22px;
+    margin-bottom: 16px;
+    box-shadow: var(--sh-card);
+    position: relative; overflow: visible;
+}
+.dnd-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+    overflow: hidden;
+}
+
+.dnd-card-label {
+    font-family: var(--f-titulo);
+    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--g5); margin-bottom: 18px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--b4);
+}
+
+/* Wrapper scrollável para telas de página inteira (personagens, módulos, etc.) */
+.dnd-scroll-page {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ BOTÕES
+══════════════════════════════════════════════════════════════════════════════ */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 9px 20px;
+    border-radius: var(--r);
+    font-family: var(--f-titulo); font-size: 10px;
+    font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; border: 1px solid transparent;
+    transition: all var(--ease); text-decoration: none; white-space: nowrap;
+}
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.btn-gold {
+    background: linear-gradient(135deg, var(--g6), var(--g5));
+    border-color: var(--g5); color: var(--g1);
+}
+.btn-gold:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--g5), var(--g4));
+    box-shadow: 0 4px 18px rgba(201,168,76,.2);
+    transform: translateY(-1px);
+}
+
+.btn-ghost {
+    background: transparent; border-color: var(--b5); color: var(--t2);
+}
+.btn-ghost:hover:not(:disabled) {
+    border-color: var(--g5); color: var(--t0);
+}
+
+.btn-danger {
+    background: rgba(122,24,24,.18); border-color: var(--vermelho); color: var(--verm-b);
+}
+.btn-danger:hover:not(:disabled) {
+    background: rgba(122,24,24,.32); transform: translateY(-1px);
+}
+
+.btn-verde {
+    background: rgba(30,122,69,.18); border-color: var(--verde); color: var(--verde-b);
+}
+.btn-verde:hover:not(:disabled) {
+    background: rgba(30,122,69,.32); transform: translateY(-1px);
+}
+
+.dnd-btn-primary {
+    display: block; padding: 16px 40px;
+    background: linear-gradient(135deg, var(--g5), var(--g4));
+    border: 1px solid var(--g3);
+    border-radius: var(--r);
+    color: var(--g1); font-family: var(--f-titulo);
+    font-size: 12px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+    cursor: pointer;
+    transition: background var(--ease), box-shadow var(--ease), transform .15s;
+}
+.dnd-btn-primary:hover {
+    box-shadow: 0 6px 24px rgba(201,168,76,.25);
+    transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ FORMULÁRIOS
+══════════════════════════════════════════════════════════════════════════════ */
+.dnd-input, .dnd-select, .dnd-textarea {
+    width: 100%;
+    background: rgba(8,6,3,.9);
+    border: 1px solid var(--b5);
+    border-radius: var(--r);
+    padding: 10px 12px;
+    color: var(--t0); font-family: var(--f-corpo); font-size: 15px;
+    outline: none;
+    transition: border-color var(--ease), box-shadow var(--ease);
+    -webkit-appearance: none; appearance: none;
+    margin-bottom: 12px;
+}
+.dnd-input:focus, .dnd-select:focus, .dnd-textarea:focus {
+    border-color: var(--g4);
+    box-shadow: 0 0 0 2px rgba(201,168,76,.1);
+    color: var(--t0);
+}
+.dnd-input::placeholder, .dnd-textarea::placeholder { color: var(--t4); }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ ALERTAS
+══════════════════════════════════════════════════════════════════════════════ */
+.alerta {
+    padding: 10px 14px; border-radius: var(--r);
+    font-size: 14px; display: flex; align-items: center; gap: 8px;
+    animation: fade-dn .3s ease;
+}
+.alerta-ok    { background: rgba(30,122,69,.18); border: 1px solid rgba(39,163,94,.3); color: var(--verde-b); }
+.alerta-erro  { background: rgba(122,24,24,.18); border: 1px solid rgba(192,48,48,.3); color: var(--verm-b); }
+.alerta-aviso { background: rgba(200,120,0,.18); border: 1px solid rgba(240,152,32,.3); color: var(--ambar-b); }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ TOASTS — NOTIFICAÇÕES EM PT-BR
+══════════════════════════════════════════════════════════════════════════════ */
+.toast-container {
+    position: fixed; bottom: 20px; right: 20px;
+    z-index: 9999; display: flex; flex-direction: column; gap: 8px;
+    pointer-events: none;
+}
+.toast {
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 13px 16px;
+    background: rgba(14,10,6,.96);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 8px 32px rgba(0,0,0,.7);
+    min-width: 260px; max-width: 360px;
+    pointer-events: all; position: relative; overflow: hidden;
+    animation: slide-r .3s var(--ease-bounce) both;
+}
+.toast::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+}
+.toast-saindo { animation: none; opacity: 0; transform: translateX(20px); transition: .25s ease; }
+
+.toast-icone  { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+.toast-corpo  { flex: 1; }
+.toast-titulo {
+    font-family: var(--f-titulo); font-size: 11px;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px;
+}
+.toast-msg { font-size: 13px; color: var(--t2); line-height: 1.4; }
+
+.toast-sucesso::before      { background: var(--verde-b); }
+.toast-sucesso .toast-titulo { color: var(--verde-b); }
+.toast-erro::before         { background: var(--verm-b); }
+.toast-erro .toast-titulo    { color: var(--verm-b); }
+.toast-aviso::before        { background: var(--ambar-b); }
+.toast-aviso .toast-titulo   { color: var(--ambar-b); }
+.toast-info::before         { background: var(--azul-b); }
+.toast-info .toast-titulo    { color: var(--azul-b); }
+.toast-nivel::before        { background: linear-gradient(var(--g1), var(--verde-b)); }
+.toast-nivel .toast-titulo   { color: var(--g0); }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ UPLOAD ZONE
+══════════════════════════════════════════════════════════════════════════════ */
+.upload-zone {
+    border: 2px dashed var(--b5); border-radius: var(--r-lg);
+    padding: 48px 24px; text-align: center; cursor: pointer;
+    transition: all var(--ease);
+    background: rgba(8,6,3,.5);
+}
+.upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--g4);
+    background: rgba(20,14,6,.6);
+    box-shadow: 0 0 0 3px rgba(201,168,76,.06);
+}
+.upload-icone  { font-size: 34px; margin-bottom: 10px; }
+.upload-titulo {
+    font-family: var(--f-titulo); font-size: 12px;
+    letter-spacing: 4px; text-transform: uppercase; color: var(--t2);
+}
+.upload-dica   { font-size: 13px; color: var(--t4); margin-top: 5px; }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ MODOS DE AMBIENTE (aplicados ao .hud-cena)
+══════════════════════════════════════════════════════════════════════════════ */
+.modo-combate  .hud-cena { animation: modo-c 2s ease-in-out infinite; }
+@keyframes modo-c {
+    0%,100% { border-color: var(--b4); box-shadow: var(--sh-card); }
+    50%      { border-color: rgba(192,48,48,.5); box-shadow: 0 0 30px rgba(192,48,48,.2); }
+}
+
+.modo-misterio .hud-cena { animation: modo-m 3s ease-in-out infinite; }
+@keyframes modo-m {
+    0%,100% { border-color: var(--b4); }
+    50%      { border-color: rgba(138,70,184,.45); box-shadow: 0 0 30px rgba(90,40,120,.2); }
+}
+
+.modo-epico    .hud-cena { animation: modo-e 2s ease-in-out infinite; }
+@keyframes modo-e {
+    0%,100% { border-color: var(--b4); }
+    50%      { border-color: rgba(201,168,76,.5); box-shadow: var(--sh-ouro); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ██ RESPONSIVIDADE
+══════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .hud-grid { grid-template-columns: 1fr 1fr; }
+    .hud-log  { display: none; }  /* esconde log em tablet */
+}
+
+@media (max-width: 768px) {
+    .hud-grid { grid-template-columns: 1fr; }
+    .hud-cena { min-height: 260px; }
+    .hud-ficha, .hud-log { display: none; }
+
+    .features-grid { grid-template-columns: 1fr; }
+    .aventuras-grid { grid-template-columns: 1fr; }
+
+    .hero-titulo { letter-spacing: -1px; }
+    .btn-cta { clip-path: none; border-radius: var(--r); padding: 16px 32px; }
+
+    .login-form { padding: 20px 18px 0; }
+    .login-header { padding: 28px 18px 20px; }
+
+    .dnd-header-brand { font-size: 13px; }
+
+    .toast-container { left: 12px; right: 12px; bottom: 12px; }
+    .toast { max-width: 100%; min-width: 0; }
+}
+
+/* ══ HUD MESTRE: sidebar capítulos ══ */
+.hud-grid-mestre { grid-template-columns: 220px 1fr 260px !important; }
+
+.hud-sidebar-caps {
+    display: flex; flex-direction: column;
+    background: rgba(10,7,3,.92);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--sh-card);
+}
+.hud-sidebar-scroll { flex: 1; overflow-y: auto; padding: 8px; }
+
+.cap-btn {
+    display: flex; align-items: flex-start; gap: 9px;
+    width: 100%; text-align: left;
+    background: none; border: none; cursor: pointer;
+    padding: 9px 10px; border-radius: 7px;
+    color: var(--t2); font-family: var(--f-corpo); font-size: 14px;
+    line-height: 1.4; margin-bottom: 2px;
+    transition: background 0.18s, color 0.18s;
+    border-left: 2px solid transparent;
+}
+.cap-btn:hover { background: rgba(201,168,76,.07); color: var(--t0); }
+.cap-btn.ativo { background: rgba(201,168,76,.13); color: var(--g1); border-left-color: var(--g2); }
+.cap-num { flex-shrink: 0; margin-top: 2px; font-family: var(--f-titulo); font-size: 9px; letter-spacing: 2px; color: var(--g5); }
+.cap-btn.ativo .cap-num { color: var(--g2); }
+.cap-nome { flex: 1; }
+
+.hud-cena-info { max-height: 180px; overflow-y: auto; }
+.hud-cena-descricao { font-size: 14px !important; color: var(--t1) !important; line-height: 1.75 !important; font-style: normal !important; white-space: pre-wrap; }
+.log-sistema  { color: var(--g2); font-style: normal; opacity: 0.9; }
+.log-narracao { color: var(--t0); font-style: italic; }
+
+@media (max-width: 1100px) { .hud-grid-mestre { grid-template-columns: 180px 1fr !important; } .hud-log { display: none !important; } }
+@media (max-width: 768px)  { .hud-grid-mestre { grid-template-columns: 1fr !important; } .hud-sidebar-caps { display: none !important; } }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PATCH v4.2 — Legibilidade, Contraste e HUD Estado Vazio
+   Adicionado ao final: override por especificidade, sem tocar no CSS base.
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Variáveis de texto: off-white neutro, dourado reservado para títulos ── */
+:root {
+    --t0: #f5f5f5;        /* OFF-WHITE  — títulos, nomes               */
+    --t1: #e2e2e2;        /* GELO       — corpo de texto principal      */
+    --t2: #b8b8b8;        /* CINZA CLARO — texto secundário             */
+    --t3: #888888;        /* CINZA MÉDIO — placeholder, dim             */
+    --t4: #555555;        /* CINZA ESCURO — muito dim                   */
+    --g2: #d4af37;        /* DOURADO padrão — títulos e botões          */
+    --g1: #e8c84a;        /* DOURADO brilhante — hover / destaque       */
+    --glass:        rgba(14, 11, 7, 0.93);
+    --glass-border: rgba(255, 255, 255, 0.10);
+}
+
+/* ── Cards: fundo mais opaco + borda de separação visível ───────────────── */
+.dnd-card {
+    background: rgba(18, 14, 8, 0.93);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+.dnd-card-label {
+    color: var(--g2);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── HUD containers ─────────────────────────────────────────────────────── */
+.hud-sidebar-caps,
+.hud-log,
+.hud-cena,
+.hud-ficha {
+    background: rgba(14, 11, 7, 0.93);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+.hud-col-titulo {
+    background: rgba(24, 19, 10, 0.97);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--g2);
+    font-size: 10px;
+}
+
+/* ── Sidebar capítulos ───────────────────────────────────────────────────── */
+.cap-btn               { color: var(--t2); }
+.cap-btn:hover         { background: rgba(212,175,55,.10); color: var(--t0); }
+.cap-btn.ativo         { background: rgba(212,175,55,.15); color: var(--t0); border-left: 2px solid var(--g2); }
+.cap-btn.ativo .cap-num{ color: var(--g2); }
+.cap-nome              { font-weight: 500; }
+
+/* ── Texto da cena ───────────────────────────────────────────────────────── */
+.hud-cena-titulo    { color: var(--g1); font-size: 16px; margin-bottom: 8px; }
+.hud-cena-descricao { color: var(--t1); font-size: 14px; line-height: 1.78; }
+
+/* ── Log de sessão ───────────────────────────────────────────────────────── */
+.log-texto     { color: var(--t1); }
+.log-narracao  { color: var(--t0); }
+.log-sistema   { color: var(--g1); opacity: 1; }
+.log-timestamp { color: var(--t3); }
+.log-textarea  {
+    background: rgba(10, 8, 4, 0.95);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: var(--t0);
+}
+.log-textarea:focus { border-color: rgba(212, 175, 55, 0.40); }
+
+/* ── Botão gold ──────────────────────────────────────────────────────────── */
+.btn-gold { background: linear-gradient(135deg,#3d2c08,#6b4f10); border-color: #8b6914; color: var(--g1); }
+.btn-gold:hover:not(:disabled) { background: linear-gradient(135deg,#5a4010,#9a7030); box-shadow: 0 4px 18px rgba(212,175,55,.25); }
+
+/* ── Nav ─────────────────────────────────────────────────────────────────── */
+.dnd-nav-btn        { color: var(--t3); }
+.dnd-nav-btn:hover  { color: var(--t1); }
+.dnd-nav-btn.ativo  { color: var(--g2); border-bottom-color: var(--g2); }
+.dnd-header-user    { color: var(--t2); }
+
+/* ── Inputs ─────────────────────────────────────────────────────────────── */
+.dnd-input, .dnd-textarea {
+    background: rgba(10, 8, 4, 0.95);
+    border-color: rgba(255, 255, 255, 0.10);
+    color: var(--t0);
+}
+.dnd-input:focus, .dnd-textarea:focus { border-color: rgba(212,175,55,.45); }
+.dnd-input::placeholder, .dnd-textarea::placeholder { color: var(--t4); }
+
+/* ── Estado vazio do HUD (nenhuma campanha / erro) ───────────────────────── */
+.hud-empty-root {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; text-align: center; padding: 40px;
+    color: var(--t3);
+}
+.hud-empty-titulo {
+    font-family: var(--f-titulo);
+    font-size: 14px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--t2); margin-bottom: 12px;
+}
+.hud-empty-desc {
+    font-family: var(--f-corpo);
+    font-size: 15px; line-height: 1.75;
+    max-width: 380px; color: var(--t3);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PATCH v4.3 — Blocos de conteúdo do capítulo (Roll20-inspired)
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* Label de seção (READ ALOUD / NOTA DO MESTRE) */
+.cap-bloco-label {
+    font-family: var(--f-titulo);
+    font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--t4);
+    margin-bottom: 8px; margin-top: 14px;
+    display: flex; align-items: center; gap: 6px;
+}
+.cap-bloco-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--b4), transparent);
+}
+
+/* Bloco READ ALOUD — texto para narrar em voz alta */
+.cap-read-aloud-wrap {
+    background: rgba(30, 22, 10, 0.70);
+    border: 1px solid rgba(201, 168, 76, 0.18);
+    border-left: 3px solid var(--g3);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px 10px;
+    margin-bottom: 10px;
+}
+.cap-read-aloud-txt {
+    font-family: var(--f-corpo);
+    font-size: 14px; color: var(--t0);
+    line-height: 1.80; font-style: italic;
+    margin: 0 0 8px;
+}
+.cap-read-aloud-txt:last-child { margin-bottom: 0; }
+
+/* Bloco NOTA DO MESTRE — informações de bastidor */
+.cap-dm-note-wrap {
+    background: rgba(10, 18, 30, 0.65);
+    border: 1px solid rgba(100, 140, 200, 0.18);
+    border-left: 3px solid #4a6fa5;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px 10px;
+    margin-bottom: 10px;
+}
+.cap-dm-note-txt {
+    font-family: var(--f-corpo);
+    font-size: 13px; color: var(--t2);
+    line-height: 1.72;
+    margin: 0 0 6px;
+}
+.cap-dm-note-txt:last-child { margin-bottom: 0; }
+
+/* Scroll da área de info da cena — acomoda blocos mais longos */
+.hud-cena-info {
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 14px 16px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PATCH v4.4 — Mini personagens sidebar, checklist, criação de personagem,
+                campo-label reutilizável
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── campo-label (reutilizável em todos os forms) */
+.campo-label {
+    display: block; font-size: 10px; letter-spacing: 3px;
+    color: var(--t4); font-family: 'Cinzel',serif; margin-bottom: 6px;
+}
+
+/* ── Mini personagem na sidebar do mestre */
+.mini-personagem {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid var(--b5);
+}
+.mini-personagem:last-child { border-bottom: none; }
+.mini-retrato {
+    width: 36px; height: 36px; border-radius: 50%;
+    object-fit: cover; border: 1px solid var(--g4); flex-shrink: 0;
+}
+.mini-retrato-placeholder {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    background: var(--b3); border: 1px solid var(--b5);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--t4); font-size: 16px;
+}
+.mini-nome {
+    font-family: 'Cinzel',serif; font-size: 11px;
+    color: var(--g2); font-weight: 600; letter-spacing: .5px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mini-sub { font-size: 10px; color: var(--t4); letter-spacing: 1px; margin-top: 1px; }
+
+/* ── Checklist de objetivos */
+.hud-checklist-wrap {
+    flex-shrink: 0; border-bottom: 1px solid var(--b5); padding-bottom: 8px; margin-bottom: 8px;
+}
+.hud-checklist-scroll {
+    max-height: 160px; overflow-y: auto; padding: 4px 0;
+}
+.checklist-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 5px 8px; border-radius: 6px; cursor: pointer;
+    transition: background .15s;
+    user-select: none;
+}
+.checklist-item:hover { background: rgba(255,255,255,.04); }
+.checklist-item.concluido .checklist-txt {
+    color: var(--t4); text-decoration: line-through; opacity: .6;
+}
+.checklist-box {
+    width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0;
+    border: 1px solid var(--g4); background: var(--b3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--g2); margin-top: 1px;
+    transition: background .15s;
+}
+.checklist-item.concluido .checklist-box {
+    background: rgba(201,168,76,.2); border-color: var(--g3);
+}
+.checklist-txt {
+    font-size: 12px; color: var(--t2); line-height: 1.5;
+    flex: 1; transition: color .15s, opacity .15s;
+}
+
+/* ── Tela de Criação de Personagem */
+.criar-personagem-wrap { padding: 16px; }
+
+/* Seletor de step */
+.step-dot {
+    width: 28px; height: 28px; border-radius: 50%; display: inline-flex;
+    align-items: center; justify-content: center;
+    font-family: 'Cinzel',serif; font-size: 11px; transition: all .2s;
+}
+
+/* Input numérico de atributos */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { opacity: 1; }
+
+/* HUD jogador sem personagem — CTA */
+.sem-personagem-cta {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 100%; padding: 24px; text-align: center;
+    gap: 12px;
+}
+
+/* Scroll suave na info da cena */
+.hud-cena-info {
+    overflow-y: auto;
+    flex: 1;
+    padding: 14px 16px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--b5) transparent;
+}
+
+/* ══════════════════════════════════════════════
+   v0.0.2 — PATCHES: Legibilidade + Novos Componentes
+   ══════════════════════════════════════════════ */
+
+/* ── Texto geral mais legível ──────────────────────── */
+:root {
+  --t0: #f5f0e8;
+  --t1: #ede3cc;
+  --t2: #d4c4a0;
+  --t3: #a89878;
+  --t4: #6e5e48;
+}
+
+.dnd-card { background: rgba(20,16,10,.92); border: 1px solid rgba(255,255,255,.08); }
+.dnd-card-label { font-size: 11px; letter-spacing: 3px; color: var(--g2); }
+
+/* ── Jogador card ──────────────────────────────────── */
+.jogador-card { background: rgba(26,21,16,.95); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 12px; }
+.jogador-card-header { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+.jogador-retrato { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; border: 1px solid var(--b5); flex-shrink: 0; }
+.jogador-retrato-placeholder { width: 44px; height: 44px; border-radius: 6px; background: var(--b3); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; border: 1px solid var(--b5); }
+.jogador-nome { font-size: 14px; color: var(--t0); font-weight: 700; margin-bottom: 2px; }
+.jogador-sub { font-size: 12px; color: var(--t3); }
+.jogador-controls { display: flex; gap: 6px; align-items: center; }
+.hp-input { width: 52px; background: var(--b3); border: 1px solid var(--b5); border-radius: 6px; padding: 5px 6px; color: var(--g1); font-size: 14px; font-family: 'Cinzel', serif; text-align: center; outline: none; }
+.btn-hp { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px; padding: 5px 10px; border-radius: 5px; border: 1px solid; cursor: pointer; flex: 1; font-weight: 700; transition: all .2s; }
+.btn-dano { background: rgba(139,32,32,.2); border-color: #8b2020; color: #e06060; }
+.btn-dano:hover { background: rgba(139,32,32,.4); }
+.btn-cura { background: rgba(42,107,58,.2); border-color: #2a6b3a; color: #60c080; }
+.btn-cura:hover { background: rgba(42,107,58,.4); }
+
+/* ── Layout switcher no header ─────────────────────── */
+.layout-switcher { display: flex; gap: 3px; align-items: center; }
+.layout-btn {
+  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700;
+  width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--b5);
+  background: transparent; color: var(--t4); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.layout-btn:hover { border-color: var(--g3); color: var(--g3); }
+.layout-btn.ativo { background: rgba(201,168,76,.15); border-color: var(--g2); color: var(--g2); }
+
+/* ── Sidebar capítulos — texto mais legível ────────── */
+.cap-btn { font-size: 12px; color: var(--t2); }
+.cap-btn.ativo { color: var(--g1); font-size: 12px; }
+.cap-num { font-size: 9px; color: var(--t4); margin-right: 6px; }
+.cap-nome { font-size: 12px; }
+
+/* ── Conteúdo DM — fontes maiores ──────────────────── */
+.cap-read-aloud-txt { font-size: 15px; line-height: 1.8; color: var(--t1); font-style: italic; }
+.cap-dm-note-txt    { font-size: 14px; line-height: 1.7; color: var(--t2); }
+.cap-bloco-label    { font-size: 10px; letter-spacing: 2px; color: var(--g3); font-family: 'Cinzel', serif; margin-bottom: 8px; }
+.hud-cena-titulo    { font-size: 18px; color: var(--g1); font-family: 'Cinzel', serif; margin-bottom: 12px; }
+.hud-cena-descricao { font-size: 14px; color: var(--t3); }
+
+/* ── Log — legibilidade ────────────────────────────── */
+.log-entry { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.log-timestamp { font-size: 10px; color: var(--g3); margin-bottom: 2px; }
+.log-texto { font-size: 13px; line-height: 1.6; }
+.log-narracao { color: var(--t1); }
+.log-sistema  { color: var(--t3); font-style: italic; font-size: 12px; }
+.log-acao     { color: var(--ambar-b); }
+.log-textarea { font-size: 13px; min-height: 44px; }
+
+/* ── Checklist ─────────────────────────────────────── */
+.checklist-item { display: flex; align-items: flex-start; gap: 10; padding: 7px 10px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.04); }
+.checklist-box { width: 16px; height: 16px; border-radius: 3px; border: 1px solid var(--b5); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--g2); margin-top: 1px; }
+.checklist-item.concluido .checklist-box { background: rgba(42,107,58,.3); border-color: var(--verde-b); }
+.checklist-txt { font-size: 13px; color: var(--t2); line-height: 1.5; }
+.checklist-item.concluido .checklist-txt { color: var(--t4); text-decoration: line-through; }
+
+/* ── Mini personagem na sidebar ────────────────────── */
+.mini-personagem { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+.mini-retrato { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.mini-retrato-placeholder { width: 32px; height: 32px; border-radius: 50%; background: var(--b3); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.mini-nome { font-size: 12px; color: var(--t1); font-weight: 600; }
+.mini-sub  { font-size: 10px; color: var(--t4); }
+
+/* ── Alerta ─────────────────────────────────────────── */
+.alerta { padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+.alerta-ok   { background: rgba(42,107,58,.2); border: 1px solid var(--verde-b); color: #7ed8a0; }
+.alerta-erro { background: rgba(122,24,24,.2); border: 1px solid var(--vermelho); color: var(--verm-b); }
+
+/* ── Input base ─────────────────────────────────────── */
+.dnd-input { font-size: 15px; color: var(--t1); }
+.dnd-input::placeholder { font-size: 13px; color: var(--t4); }
+
+
+/* ── Hud vazio ─────────────────────────────────────── */
+.hud-empty-root { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px; text-align: center; }
+.hud-empty-titulo { font-family: 'Cinzel', serif; font-size: 20px; color: var(--g1); margin-bottom: 10px; }
+.hud-empty-desc { font-size: 15px; color: var(--t2); line-height: 1.7; max-width: 400px; }
+
+/* ── Dashboard MTG ─────────────────────────────────────────────────── */
+.dashboard-root {
+    min-height: 100vh;
+    background: #0a0704;
+}
+
+/* ── Header logado na LP ──────────────────────────────────────────── */
+.lp-com-header .landing-root {
+    padding-top: 64px;
+}
+
+/* ── Gestão de campanhas ─────────────────────────────────────────── */
+.campanha-card {
+    background: #120e04;
+    border: 1px solid #2a1e0a;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+}
+.campanha-card:hover {
+    border-color: #3a2a10;
+}
+
+/* ══════════════════════════════════════════════════════
+   MAPA VTT — Fase 1
+   ══════════════════════════════════════════════════════ */
+
+/* Toolbar do mapa */
+.mapa-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    background: var(--b2);
+    border-bottom: 1px solid var(--b3);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+.mapa-toolbar .hud-col-titulo { margin-bottom: 0; font-size: 10px; }
+.mapa-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--t3);
+    cursor: pointer;
+    user-select: none;
+    font-family: 'Cinzel', serif;
+    letter-spacing: .5px;
+}
+.mapa-toggle input { accent-color: var(--g2); }
+.mapa-grid-input {
+    width: 52px;
+    background: var(--b3);
+    border: 1px solid var(--b5);
+    border-radius: 4px;
+    color: var(--t2);
+    font-size: 11px;
+    padding: 2px 6px;
+    text-align: center;
+}
+
+/* Área do mapa */
+.mapa-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #0a0804;
+    cursor: default;
+    user-select: none;
+}
+
+/* Imagem de fundo do mapa */
+.mapa-bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Estado vazio */
+.mapa-vazio {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    pointer-events: none;
+}
+.mapa-vazio button { pointer-events: all; }
+
+/* ── Tokens ──────────────────────────────────────────── */
+.mapa-token {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: filter 0.1s;
+    z-index: 10;
+}
+.mapa-token:hover { z-index: 50; }
+.mapa-token.dragging { cursor: grabbing; filter: drop-shadow(0 0 8px rgba(201,168,76,.8)); z-index: 100; }
+.mapa-token.selected .token-ring { box-shadow: 0 0 0 2px var(--g2), 0 0 10px rgba(201,168,76,.5); }
+
+/* Anel + imagem */
+.token-ring {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid;
+    overflow: hidden;
+    background: var(--b3);
+    flex-shrink: 0;
+    position: relative;
+}
+.token-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+}
+.token-initial {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Barra de HP abaixo do token */
+.token-hp-bar {
+    width: 44px;
+    height: 4px;
+    background: rgba(255,255,255,.08);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.token-hp-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* Nome do personagem */
+.token-name {
+    font-size: 9px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: .5px;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,.9), 0 0 6px rgba(0,0,0,.7);
+    white-space: nowrap;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* HP tooltip no hover */
+.token-hp-text {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10,8,4,.92);
+    border: 1px solid var(--b5);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--t1);
+    padding: 2px 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    font-family: 'Cinzel', serif;
+}
+.mapa-token:hover .token-hp-text { opacity: 1; }
+
+/* ── Painel lateral de controles VTT ────────────────── */
+.mapa-wrap {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+.mapa-controles {
+    width: 180px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--b3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--b1);
+}
+.mapa-controles-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+.token-lista-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 3px;
+}
+.token-lista-item:hover { background: var(--b3); }
+.token-lista-item.ativo { background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.2); }
+.token-mini-anel {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid;
+    overflow: hidden;
+    background: var(--b3);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+}
+.token-mini-img { width: 100%; height: 100%; object-fit: cover; }
+.token-lista-nome { font-size: 11px; color: var(--t1); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.token-lista-hp   { font-size: 9px; color: var(--t4); }
+
+/* ── NPC Tokens ─────────────────────────────────────── */
+.mapa-token.npc .token-ring { border-style: dashed; }
+/* =============================================================================
+   INTEGRAÇÃO DINÂMICA: CARDS DE HABILIDADES (JSON)
+   Adicione este bloco ao final do seu platform.css original
+   ============================================================================= */
+
+/* Container que organiza os cards em grade */
+.habilidades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    animation: dndFadeIn 0.6s ease-out;
+}
+
+/* O Card de Habilidade - Seguindo a estética de vidro obsidiano */
+.card-habilidade {
+    background: var(--b2); /* Usa sua variável de fundo escuro */
+    border: 1px solid var(--b3); /* Usa sua variável de borda */
+    border-left: 4px solid var(--g2); /* Friso em Ouro Padrão */
+    padding: 18px;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+/* Efeito de brilho ao passar o mouse */
+.card-habilidade:hover {
+    background: rgba(42, 32, 22, 0.4);
+    border-left-color: var(--g1); /* Ouro brilha mais no hover */
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 0 0 15px rgba(201, 168, 76, 0.05);
+}
+
+/* Título da Habilidade (Cinzel Decorative) */
+.hab-nome {
+    display: block;
+    font-family: 'Cinzel', serif;
+    color: var(--g1);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+    padding-bottom: 5px;
+}
+
+/* Descrição/Resumo (Crimson Text para leitura imersiva) */
+.hab-resumo {
+    color: #e0d4b0;
+    font-family: 'Crimson Text', serif;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.85;
+    font-style: italic;
+}
+
+/* Detalhe decorativo no canto do card */
+.card-habilidade::after {
+    content: '⚔';
+    position: absolute;
+    bottom: -10px;
+    right: -5px;
+    font-size: 40px;
+    color: var(--g4);
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+@keyframes dndFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
